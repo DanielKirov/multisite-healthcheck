@@ -12,11 +12,16 @@ try:
 except AttributeError:
     raise CommandError('TIME_PER_SITE no defined in settings.py')
 
+try:
+    SITES_TO_CHECK = settings.HEALTHCHECK_SITES
+except AttributeError:
+    raise CommandError('HEALTHCHECK_SITES not defined in settings.py')
+
 
 def multihealthview(request):
     template = "multi_health/results_table.html"
     queryset = URLStatusLog.objects.all()
-    number_of_sites = queryset.count()
+    number_of_sites = len(SITES_TO_CHECK)
     # We're checking one site per x seconds, so we expect the oldest update for a site
     # to be at n*x seconds, where n is the number of sites.
     # We're adding x seconds at the end just in case.

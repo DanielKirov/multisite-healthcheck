@@ -12,17 +12,19 @@ try:
 except AttributeError:
     raise CommandError('TIME_PER_SITE not defined in settings.py')
 
+try:
+    SITES_TO_CHECK = settings.HEALTHCHECK_SITES
+except AttributeError:
+    raise CommandError('HEALTHCHECK_SITES not defined in settings.py')
+
 class Command(NoArgsCommand):
 
-    args = '<site_id site_id ...>'
     help = ('This command goes through all of the URLs for every site and '
             'returns the status code of each URL')
 
     def handle(self, *args, **options):
-        if not args:
-            raise CommandError('Please specify site ids that you want checked.')
         while True:
-            for site_id in args:
+            for site_id in SITES_TO_CHECK:
                 start_time = datetime.datetime.now()
                 try:
                     site = Site.objects.get(pk=int(site_id))
@@ -34,8 +36,8 @@ class Command(NoArgsCommand):
                 self.stdout.write("Checked urls for '{}'".format(site))
                 elapsed_time = datetime.datetime.now() - start_time
                 remaining_time = (TIME_PER_SITE - elapsed_time).total_seconds()
-                print remaining_time
-                time.sleep(remaining_time)
+                if remaining_time > 0:
+                    time.sleep(remaining_time)
 
 
 
