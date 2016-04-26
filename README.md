@@ -19,8 +19,7 @@ urlpatterns = patterns(
     ...
     )
 ```
-4. Run ``` python manage.py syncdb --migrate ``` if Django<1.7 or
-``` python manage.py migrate ``` if Django>=1.7.
+4. Run ``` python manage.py syncdb --migrate ``` if Django<1.7 or ``` python manage.py migrate ``` if Django>=1.7.
 
 
 Configuration
@@ -47,3 +46,13 @@ python manage.py multisite_healthcheck
 
 This command will run infinitely. You will need to manually stop it for the process to end.
 
+The command will read the list of sites defined in settings, get a Site object for each site id, and send a request
+to the domain of that Site object. It will then store in the **URLStatusLog** table whether the status of the response
+from the site was a 200 or not (**site_is_up**) and when the check was performed (**latest_update**).
+
+The app has a view which renders all the rows in **URLStatusLog**.
+If any of the rows have a **site_is_up** that is False, the view will render the page with a status code of 500.
+In addition, the view checks if any of the rows in the **URLStatusLog** table are stale.
+A row is stale if it has been updated longer than expected, which is
+``` (len(SITES_TO_CHECK) * TIME_PER_SITE) + TIME_PER_SITE ```
+and in this case the view will render the page with a 500 status code.
