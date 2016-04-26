@@ -19,7 +19,7 @@ urlpatterns = patterns(
     ...
     )
 ```
-4. Run ``` python manage.py syncdb --migrate ``` if Django<1.7 or ``` python manage.py migrate ``` if Django>=1.7.
+4. Run ``` python manage.py syncdb --migrate ``` if Django<1.7 or ```python manage.py migrate``` if Django>=1.7.
 
 
 Configuration
@@ -53,6 +53,6 @@ from the site was a 200 or not (**site_is_up**) and when the check was performed
 The app has a view which renders all the rows in **URLStatusLog**.
 If any of the rows have a **site_is_up** that is False, the view will render the page with a status code of 500.
 In addition, the view checks if any of the rows in the **URLStatusLog** table are stale.
-A row is stale if it has been updated longer than expected, which is
+A row is stale if it hasn't been updated for a certain amount of time, which is calculated in the following way:
 ``` (len(SITES_TO_CHECK) * TIME_PER_SITE) + TIME_PER_SITE ```
-and in this case the view will render the page with a 500 status code.
+In this case the view will render the page with a 500 status code.
