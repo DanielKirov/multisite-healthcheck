@@ -19,7 +19,8 @@ urlpatterns = patterns(
     ...
     )
 ```
-4. Run ``` python manage.py syncdb --migrate ``` if Django<1.7 or ```python manage.py migrate``` if Django>=1.7.
+4. Run ``` python manage.py syncdb --migrate ``` if Django<1.7 or
+``` python manage.py migrate ``` if Django>=1.7.
 
 
 Configuration
